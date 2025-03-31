@@ -6,10 +6,16 @@
     xmlns:local="clr-namespace:ReadME"
     Shell.FlyoutBehavior="Disabled"
     Title="ReadME">
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <Tab Title="Home">
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+    </Tab>
+    <Tab Title="Book">
+        <ShellContent
+            Title="Book"
+            ContentTemplate="{DataTemplate local:Book}"
+            Route="Book" />
+    </Tab>
 </Shell>
