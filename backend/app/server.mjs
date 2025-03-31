@@ -1,7 +1,5 @@
-import https from "https";
 import path from "path";
 import fs from "fs";
-import { createServer } from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
 import sequelize from "./backend/db/sequelize.mjs";
@@ -19,13 +17,6 @@ app.use(
   swaggerUi.setup(swaggerSpec, { explorer: true })
 );
 
-const privateKey = fs.readFileSync(path.resolve("privkey.key"), "utf8");
-// Import SSL certificate
-const sslcert = {
-  key: privateKey,
-  cert: fs.readFileSync(path.resolve("cerificate.crt"), "utf8"),
-};
-
 // Import routes
 import userRoute from "./backend/routes/user.mjs";
 import bookRoute from "./backend/routes/book.mjs";
@@ -41,9 +32,7 @@ app.use("/api/author", authorRoute);
 app.use("/api/editor", editorRoute);
 app.use("/api/search", searchRoute);
 
-const httpsServer = https.createServer(sslcert, app);
 
-httpsServer.listen(443, () => {
-  console.log("Server running on port https://localhost:443");
+app.listen(8080 , () => {
+  console.log("Server running on port http://localhost:8080");
 });
-export { privateKey };

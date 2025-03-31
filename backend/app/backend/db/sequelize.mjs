@@ -10,7 +10,7 @@ import { books, authors, editors, categories } from "./data-mock.mjs";
 
 // Create a new instance of Sequelize with the connection string to our database
 const sequelize = new Sequelize("db_passion_lecture", "root", "root", {
-  host: "db",
+  host: "localhost",
   dialect: "mysql",
   port: 3306,
   logging: false,

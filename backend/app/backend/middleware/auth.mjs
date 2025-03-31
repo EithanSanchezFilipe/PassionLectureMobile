@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
-import { privateKey } from "../../server.mjs";
+import dotenv from 'dotenv'
+dotenv.config()
 const auth = (req, res, next) => {
   //vérifie que l'utilisateur possède un token stocké dans les cookies
   const token = req.cookies.token;
@@ -9,7 +10,7 @@ const auth = (req, res, next) => {
       .status(400)
       .json({ message: "Vous n'avez pas fourni de jeton d'authentification" });
   }
-  jwt.verify(token, privateKey, (error, decodedToken) => {
+  jwt.verify(token, process.secret, (error, decodedToken) => {
     if (error) {
       const message = `L'utilisateur n'est pas autorisé à accéder à cette ressource.`;
       return res.status(401).json({ message, data: error });
