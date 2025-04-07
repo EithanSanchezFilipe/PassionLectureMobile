@@ -10,6 +10,7 @@ import { books, authors, editors, categories } from "./data-mock.mjs";
 import { EPub } from "epub2";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 // Create a new instance of Sequelize with the connection string to our database
 const sequelize = new Sequelize("passionlecture", "root", "root", {
@@ -89,22 +90,19 @@ const initBook = () => {
 const initEPub = async () => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-
   const epubPath = path.resolve(__dirname, "./epubs/OliverTwist.epub");
-  EPub.createAsync(epubPath).then((epub) => {
-    Book.create({
-      name: "Oliver Twist",
-      passage: "S'il vous plaît, monsieur, j’en veux encore.",
-      summary:
-        "Oliver Twist, un orphelin né dans un hospice, subit de nombreuses épreuves en grandissant dans la pauvreté. Il tombe entre les mains d'un gang de voleurs dirigé par Fagin, mais cherche à échapper à ce destin pour trouver amour et justice.",
-      editionYear: 1838,
-      pages: 608,
-      cover: epub.metadata.cover,
-      epub: epub,
-      category_fk: 1,
-      author_fk: 1,
-      editor_fk: 1,
-    });
+  const epubBuffer = fs.readFileSync(epubPath);
+  Book.create({
+    name: "Oliver Twist",
+    passage: "S'il vous plaît, monsieur, j’en veux encore.",
+    summary:
+      "Oliver Twist, un orphelin né dans un hospice, subit de nombreuses épreuves en grandissant dans la pauvreté. Il tombe entre les mains d'un gang de voleurs dirigé par Fagin, mais cherche à échapper à ce destin pour trouver amour et justice.",
+    editionYear: 1838,
+    pages: 608,
+    epub: epubBuffer,
+    category_fk: 1,
+    author_fk: 1,
+    editor_fk: 1,
   });
 };
 

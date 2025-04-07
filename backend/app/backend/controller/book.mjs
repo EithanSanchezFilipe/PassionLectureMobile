@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import fs from "fs";
 import { EPub } from "epub2";
 import path from "path";
+import e from "express";
 
 export async function Create(req, res) {
   const {
@@ -51,7 +52,40 @@ export function Reach(req, res) {
             message: "Le livre n'existe pas",
           });
         }
-        res.status(200).json(book);
+        const tempDir = path.resolve("./app/temp");
+        if (!fs.existsSync(tempDir)) {
+          fs.mkdirSync(tempDir, { recursive: true });
+        }
+
+        const tempFilePath = path.resolve(tempDir, `book-${id}.epub`);
+        console.log(book.epub);
+        fs.writeFileSync(tempFilePath, book.epub);
+
+        EPub.createAsync(tempFilePath)
+          .then((epub) => {
+            epub.getImage(epub.metadata.cover, (err, data, mimeType) => {
+              if (err) {
+                console.error(
+                  "Erreur lors de la récupération de la couverture :",
+                  err
+                );
+                return res.status(500).json({
+                  message: "Erreur lors de la récupération de la couverture",
+                  error: err,
+                });
+              }
+
+              res.setHeader("Content-Type", mimeType);
+              res.send(data);
+            });
+          })
+          .catch((e) => {
+            console.error("Error loading EPUB:", e);
+            return res.status(500).json({
+              message: "Erreur lors du chargement de l'EPUB",
+              error: e,
+            });
+          });
       })
       .catch((error) => {
         console.error(error);
