@@ -59,6 +59,9 @@ const BookModel = (sequelize, DataTypes) => {
       coverImage: {
         type: DataTypes.BLOB,
       },
+      epub:{
+        type: DataTypes.BLOB('medium')
+      },
       pages: {
         type: DataTypes.INTEGER,
         allowNull: false,
