@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   Create,
   Update,
@@ -8,8 +8,8 @@ import {
   Rating,
   All,
   GetComments,
-} from '../controller/book.mjs';
-import { auth } from '../middleware/auth.mjs';
+} from "../controller/book.mjs";
+import { auth } from "../middleware/auth.mjs";
 const router = Router();
 
 // POST
@@ -56,7 +56,7 @@ const router = Router();
  *       500:
  *         description: erreur serveur
  */
-router.post('/add', auth, Create);
+router.post("/add", auth, Create);
 /**
  * @swagger
  * /book/{id}/rating:
@@ -96,9 +96,9 @@ router.post('/add', auth, Create);
  *        description: erreur serveur
  */
 
-router.post('/:id/comments', auth, Rating);
+router.post("/:id/comments", auth, Rating);
 
-router.get('/:id/comments', auth, GetComments);
+router.get("/:id/comments", auth, GetComments);
 // GET
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.get('/:id/comments', auth, GetComments);
  *       500:
  *         description: erreur serveur
  */
-router.get('/', All);
+router.get("/", All);
 /**
  * @swagger
  * /book/{id}:
@@ -152,7 +152,7 @@ router.get('/', All);
  *         description: erreur serveur
  */
 
-router.get('/:id', auth, Reach);
+router.get("/:id", Reach);
 // DELETE
 /**
  * @swagger
@@ -180,7 +180,7 @@ router.get('/:id', auth, Reach);
  *         description: erreur serveur
  */
 
-router.delete('/:id', auth, Delete);
+router.delete("/:id", auth, Delete);
 /**
  * @swagger
  * /book/delete/comment/{id}:
@@ -206,7 +206,7 @@ router.delete('/:id', auth, Delete);
  *       500:
  *         description: erreur serveur
  */
-router.delete('/comments/:id', auth, DeleteComment);
+router.delete("/comments/:id", auth, DeleteComment);
 // PUT
 /**
  * @swagger
@@ -253,6 +253,6 @@ router.delete('/comments/:id', auth, DeleteComment);
  *         description: erreur serveur
  */
 
-router.put('/:id', auth, Update);
+router.put("/:id", auth, Update);
 
 export default router;
