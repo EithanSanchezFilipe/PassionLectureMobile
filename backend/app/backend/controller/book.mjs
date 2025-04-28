@@ -76,7 +76,7 @@ export function Reach(req, res) {
               }
 
               res.setHeader("Content-Type", mimeType);
-              res.send(data);
+              return res.send(data);
             });
           })
           .catch((e) => {
