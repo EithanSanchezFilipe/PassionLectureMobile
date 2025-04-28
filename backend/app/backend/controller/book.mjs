@@ -76,7 +76,9 @@ export function Reach(req, res) {
               }
 
               res.setHeader("Content-Type", mimeType);
-              return res.send(data);
+              fs.unlink(tempFilePath, (_) => {
+                return res.send(data);
+              });
             });
           })
           .catch((e) => {
