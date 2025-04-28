@@ -63,6 +63,7 @@ export function Reach(req, res) {
 
         EPub.createAsync(tempFilePath)
           .then((epub) => {
+            epub.getFile;
             epub.getImage(epub.metadata.cover, (err, data, mimeType) => {
               if (err) {
                 console.error(
@@ -103,6 +104,10 @@ export function Reach(req, res) {
   }
 }
 export async function All(req, res) {
+  const tempDir = path.resolve("./app/temp");
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
   if (req.query.name) {
     if (req.query.name.length < 2) {
       const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
@@ -125,10 +130,39 @@ export async function All(req, res) {
   //findAll trouve toutes les données d'une table
   Book.findAll()
     //prends la valeur trouver et la renvoie en format json avec un message de succès
-    .then((book) => {
-      // Définir un message de succès pour l'utilisateur de l'API REST
-      const message = "Les livres ont bien été récupérée.";
-      res.status(201).json({ message, book });
+    .then((books) => {
+      books.forEach((book) => {
+        const tempFilePath = path.resolve(tempDir, `book-${id}.epub`);
+        console.log(book.epub);
+        fs.writeFileSync(tempFilePath, book.epub);
+
+        EPub.createAsync(tempFilePath)
+          .then((epub) => {
+            epub.getFile;
+            epub.getImage(epub.metadata.cover, (err, data, mimeType) => {
+              if (err) {
+                console.error(
+                  "Erreur lors de la récupération de la couverture :",
+                  err
+                );
+                return res.status(500).json({
+                  message: "Erreur lors de la récupération de la couverture",
+                  error: err,
+                });
+              }
+              fs.unlink(tempFilePath, (_) => {});
+            });
+          })
+          .catch((e) => {
+            console.error("Error loading EPUB:", e);
+            return res.status(500).json({
+              message: "Erreur lors du chargement de l'EPUB",
+              error: e,
+            });
+          });
+      });
+      res.setHeader("Content-Type", mimeType);
+      return res.send(data);
     })
     //si le serveur n'arrive pas a récuperer les données il renvoie une erreur 500
     .catch((e) => {
