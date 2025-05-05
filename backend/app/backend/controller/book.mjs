@@ -108,69 +108,96 @@ export async function All(req, res) {
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir, { recursive: true });
   }
-  if (req.query.name) {
-    if (req.query.name.length < 2) {
-      const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
-      return res.status(400).json({ message });
-    }
-    let limit = 3;
-    if (req.query.limit) {
-      limit = req.query.limit;
-    }
-    return Book.findAll({
-      //select * from product where name like %...%
-      where: { name: { [Op.like]: `%${req.query.name}%` } },
-      order: [["name", "ASC"]],
-      limit: limit,
-    }).then((book) => {
-      const message = `Il y a ${book.length} livres qui correspondent au terme de la recherche`;
-      res.status(200).json({ message, book });
-    });
-  }
-  //findAll trouve toutes les données d'une table
-  Book.findAll()
-    //prends la valeur trouver et la renvoie en format json avec un message de succès
-    .then((books) => {
-      books.forEach((book) => {
-        const tempFilePath = path.resolve(tempDir, `book-${id}.epub`);
-        console.log(book.epub);
-        fs.writeFileSync(tempFilePath, book.epub);
 
-        EPub.createAsync(tempFilePath)
-          .then((epub) => {
-            epub.getFile;
-            epub.getImage(epub.metadata.cover, (err, data, mimeType) => {
-              if (err) {
-                console.error(
-                  "Erreur lors de la récupération de la couverture :",
-                  err
-                );
-                return res.status(500).json({
-                  message: "Erreur lors de la récupération de la couverture",
-                  error: err,
+  try {
+    let books;
+
+    if (req.query.name) {
+      if (req.query.name.length < 2) {
+        return res.status(400).json({
+          message:
+            "Le terme de la recherche doit contenir au moins 2 caractères",
+        });
+      }
+      const limit = req.query.limit ? parseInt(req.query.limit) : 3;
+      books = await Book.findAll({
+        where: { name: { [Op.like]: `%${req.query.name}%` } },
+        order: [["name", "ASC"]],
+        limit,
+      });
+    } else {
+      books = await Book.findAll();
+    }
+
+    const coverDataArray = await Promise.all(
+      books.map((book) => {
+        return new Promise((resolve, reject) => {
+          const tempFilePath = path.resolve(tempDir, `book-${book.id}.epub`);
+          fs.writeFileSync(tempFilePath, book.epub);
+
+          EPub.createAsync(tempFilePath)
+            .then((epub) => {
+              const coverId = epub.metadata.cover;
+              if (!coverId) {
+                fs.unlink(tempFilePath, () => {});
+                return resolve({
+                  id: book.id,
+                  name: book.name,
+                  cover: null,
                 });
               }
-              fs.unlink(tempFilePath, (_) => {});
+
+              epub.getImage(coverId, (err, data, mimeType) => {
+                fs.unlink(tempFilePath, () => {});
+                if (err) {
+                  console.error(
+                    "Erreur de couverture pour le livre",
+                    book.id,
+                    err
+                  );
+                  return resolve({
+                    id: book.id,
+                    name: book.name,
+                    cover: null,
+                  });
+                }
+
+                const base64 = data.toString("base64");
+                resolve({
+                  id: book.id,
+                  name: book.name,
+                  cover: {
+                    mimeType,
+                    base64,
+                  },
+                });
+              });
+            })
+            .catch((err) => {
+              console.error("Erreur EPUB pour le livre", book.id, err);
+              fs.unlink(tempFilePath, () => {});
+              resolve({
+                id: book.id,
+                name: book.name,
+                cover: null,
+              });
             });
-          })
-          .catch((e) => {
-            console.error("Error loading EPUB:", e);
-            return res.status(500).json({
-              message: "Erreur lors du chargement de l'EPUB",
-              error: e,
-            });
-          });
-      });
-      res.setHeader("Content-Type", mimeType);
-      return res.send(data);
-    })
-    //si le serveur n'arrive pas a récuperer les données il renvoie une erreur 500
-    .catch((e) => {
-      // Définir un message d'erreur pour l'utilisateur de l'API REST
-      const message =
-        "La liste des livres n'a pas pu être récupérée. Merci de réessayer dans quelques instants.";
-      res.status(500).json({ message, data: error });
+        });
+      })
+    );
+
+    res.status(200).json({
+      message: `Liste des livres avec leurs couvertures`,
+      books: coverDataArray,
     });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message:
+        "La liste des livres n'a pas pu être récupérée. Merci de réessayer dans quelques instants.",
+      error: e,
+    });
+  }
 }
 export async function Delete(req, res) {
   Book.findByPk(req.params.id).then((deletedbook) => {
