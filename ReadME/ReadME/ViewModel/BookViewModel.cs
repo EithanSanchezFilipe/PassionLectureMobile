@@ -59,6 +59,7 @@ namespace ReadME.ViewModel
             if (value != null)
             {
                 Shell.Current.Navigation.PushAsync(new BookDetail(SelectedBook));
+                SelectedBook = null;
             }
         }
     }

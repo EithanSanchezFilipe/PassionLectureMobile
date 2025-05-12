@@ -146,7 +146,9 @@ export async function All(req, res) {
                   cover: null,
                 });
               }
-
+              epub.flow.forEach((chapter) => {
+                console.log(chapter);
+              });
               epub.getImage(coverId, (err, data, mimeType) => {
                 fs.unlink(tempFilePath, () => {});
                 if (err) {

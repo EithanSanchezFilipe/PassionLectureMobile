@@ -32,7 +32,6 @@ app.use("/api/author", authorRoute);
 app.use("/api/editor", editorRoute);
 app.use("/api/search", searchRoute);
 
-
-app.listen(8080 , () => {
+app.listen(8080, () => {
   console.log("Server running on port http://localhost:8080");
 });
