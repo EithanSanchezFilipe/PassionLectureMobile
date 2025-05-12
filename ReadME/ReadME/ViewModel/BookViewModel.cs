@@ -14,6 +14,9 @@ namespace ReadME.ViewModel
         [ObservableProperty]
         private ObservableCollection<Model.Book> _books = new ObservableCollection<Model.Book>();
 
+        [ObservableProperty]
+        private Model.Book _selectedBook;
+
         static HttpClient client = new HttpClient();
 
         public BookViewModel()
@@ -48,6 +51,14 @@ namespace ReadME.ViewModel
             }
             catch (Exception ex)
             {
+            }
+        }
+
+        partial void OnSelectedBookChanged(Model.Book value)
+        {
+            if (value != null)
+            {
+                Shell.Current.Navigation.PushAsync(new BookDetail(SelectedBook));
             }
         }
     }

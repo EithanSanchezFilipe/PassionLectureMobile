@@ -9,8 +9,7 @@
         <ViewModel:BookViewModel/>
     </ContentPage.BindingContext>
 
-
-    <CollectionView ItemsSource="{Binding Books}">
+    <CollectionView ItemsSource="{Binding Books}" SelectionMode="Single" SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
         <CollectionView.EmptyView>
             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                 <Label Text="Aucune livre disponible"/>
