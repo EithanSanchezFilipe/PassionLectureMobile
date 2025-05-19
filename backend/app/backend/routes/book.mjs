@@ -8,6 +8,7 @@ import {
   Rating,
   All,
   GetComments,
+  Chapter,
 } from "../controller/book.mjs";
 import { auth } from "../middleware/auth.mjs";
 const router = Router();
@@ -95,7 +96,7 @@ router.post("/add", auth, Create);
  *       500:
  *        description: erreur serveur
  */
-
+router.get("/:id/chapters", Chapter);
 router.post("/:id/comments", auth, Rating);
 
 router.get("/:id/comments", auth, GetComments);

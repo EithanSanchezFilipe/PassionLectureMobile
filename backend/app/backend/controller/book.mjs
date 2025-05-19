@@ -146,9 +146,6 @@ export async function All(req, res) {
                   cover: null,
                 });
               }
-              epub.flow.forEach((chapter) => {
-                console.log(chapter);
-              });
               epub.getImage(coverId, (err, data, mimeType) => {
                 fs.unlink(tempFilePath, () => {});
                 if (err) {
@@ -200,6 +197,23 @@ export async function All(req, res) {
       error: e,
     });
   }
+}
+export function Chapter(req, res) {
+  const id = req.params.id;
+
+  const tempDir = path.resolve("./app/temp");
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
+
+  Book.findByPk(id).then((book) => {
+    const tempFilePath = path.resolve(tempDir, `book-${book.id}.epub`);
+    fs.writeFileSync(tempFilePath, book.epub);
+    EPub.createAsync(tempFilePath).then((epub) => {
+      res.status(200).json(epub.flow.slice(1));
+      fs.unlink(tempFilePath, () => {});
+    });
+  });
 }
 export async function Delete(req, res) {
   Book.findByPk(req.params.id).then((deletedbook) => {
