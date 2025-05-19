@@ -71,6 +71,9 @@
 	  <Compile Update="BookDetail.xaml.cs">
 	    <DependentUpon>BookDetail.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Read.xaml.cs">
+	    <DependentUpon>Read.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -78,6 +81,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="BookDetail.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Read.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
