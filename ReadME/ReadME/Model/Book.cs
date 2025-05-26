@@ -45,15 +45,9 @@ namespace ReadME.Model
         public string Href { get; set; }
 
         [JsonPropertyName("media-type")]
+        public string Media_Type { get; set; }
+
+        [JsonPropertyName("mediaType")]
         public string MediaType { get; set; }
-
-        [JsonPropertyName("title")]
-        public string Title { get; set; }
-
-        [JsonPropertyName("order")]
-        public int Order { get; set; }
-
-        [JsonPropertyName("level")]
-        public int Level { get; set; }
     }
 }

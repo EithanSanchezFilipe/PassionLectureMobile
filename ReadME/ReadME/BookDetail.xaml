@@ -21,7 +21,9 @@
 
             <Button Text="Lire"
                         HorizontalOptions="Center"
-                        Padding="10,5"/>
+                        Padding="10,5"
+                    Command="{Binding ReadCommand}"
+                    CommandParameter="{Binding Book.Id}"/>
 
         </VerticalStackLayout>
     </Frame>

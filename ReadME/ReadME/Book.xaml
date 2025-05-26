@@ -8,22 +8,23 @@
     <ContentPage.BindingContext>
         <ViewModel:BookViewModel/>
     </ContentPage.BindingContext>
-
-    <CollectionView ItemsSource="{Binding Books}" SelectionMode="Single" SelectedItem="{Binding SelectedBook, Mode=TwoWay}">
-        <CollectionView.EmptyView>
-            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Text="Aucune livre disponible"/>
-            </VerticalStackLayout>
-        </CollectionView.EmptyView>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:Book">
-                <Frame Margin="0,5" Padding="10">
-                    <VerticalStackLayout>
-                        <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold"/>
-                        <Image Source="{Binding Image}" MaximumHeightRequest="200" />
-                    </VerticalStackLayout>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <Frame Padding="30">
+        <CollectionView ItemsSource="{Binding Books}" SelectionMode="Single" SelectionChanged="CollectionView_SelectionChanged">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Aucune livre disponible"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Book">
+                    <Frame Margin="0,5" Padding="10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold"/>
+                            <Image Source="{Binding Image}" MaximumHeightRequest="200" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Frame>
 </ContentPage>

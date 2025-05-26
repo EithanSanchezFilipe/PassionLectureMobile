@@ -2,8 +2,10 @@ namespace ReadME;
 
 public partial class Read : ContentPage
 {
-	public Read()
+	public Read(int id)
 	{
 		InitializeComponent();
-	}
+
+		var vm = new ViewModel.ReadViewModel(id);
+    }
 }
