@@ -7,7 +7,7 @@
              Title="Read">
     <VerticalStackLayout>
 
-        <WebView Source="{Binding Page}">
+        <WebView Source="{Binding Page}" HeightRequest="500" WidthRequest="400">
         </WebView>
 
     </VerticalStackLayout>
