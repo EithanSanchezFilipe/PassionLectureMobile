@@ -58,11 +58,11 @@ namespace ReadME.Services
                 return null;
             }
         }
-        public static async Task<ObservableCollection<Model.Chapter>> GetChapters(int bookId)
+        public static async Task<Model.Chapter> GetChapters(int bookId)
         {
             try
             {
-                ObservableCollection<Chapter> chapters = new ObservableCollection<Chapter>();
+                Chapter chapter = new Chapter();
                 HttpResponseMessage response = await client.GetAsync($"{BaseAddress}/api/book/{bookId}/chapters");
                 response.EnsureSuccessStatusCode();
 
@@ -73,15 +73,13 @@ namespace ReadME.Services
                     PropertyNameCaseInsensitive = true,  // Ignore les différences de casse
                     AllowTrailingCommas = true           // Ignore les virgules en trop
                 };
-                var chaptersResponse = JsonSerializer.Deserialize<List<Chapter>>(responseBody, options);
-                if (chaptersResponse != null)
+                var chapterResponse = JsonSerializer.Deserialize<Chapter>(responseBody, options);
+                if (chapterResponse != null)
                 {
-                    foreach (Chapter chapt in chaptersResponse)
-                    {
-                        chapters.Add(chapt);
-                    }
+                    chapter = chapterResponse;
                 }
-                    return chapters;
+
+                    return chapter;
             }
             catch (Exception ex)
             {

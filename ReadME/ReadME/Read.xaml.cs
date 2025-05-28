@@ -7,5 +7,6 @@ public partial class Read : ContentPage
 		InitializeComponent();
 
 		var vm = new ViewModel.ReadViewModel(id);
+		BindingContext = vm;
     }
 }

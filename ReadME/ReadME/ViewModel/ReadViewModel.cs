@@ -4,6 +4,7 @@ using ReadME.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +16,25 @@ namespace ReadME.ViewModel
         private int _bookId;
 
         [ObservableProperty]
-        private ObservableCollection<Chapter> _chapters = new ObservableCollection<Chapter>();
+        private Chapter _chapters = new Chapter();
+
+        [ObservableProperty]
+        private string _page;
 
         public ReadViewModel(int id) 
         {
             _bookId = id;
-            Chapters = await BookServices.GetChapters(_bookId);
+            Initialize();
+
         }
 
+        private void Initialize()
+        {
+            Page = $"http://localhost:8080/api/book/{_bookId}/chapters";
+            //Chapters = await BookServices.GetChapters(_bookId);
+            //Trace.WriteLine(Chapters);
+            Trace.WriteLine(Page);
+        }
 
     }
 }

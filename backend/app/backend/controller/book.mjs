@@ -207,14 +207,42 @@ export function Chapter(req, res) {
   }
 
   Book.findByPk(id).then((book) => {
+    if (!book) {
+      return res.status(404).json({ message: "Livre non trouvé" });
+    }
+
     const tempFilePath = path.resolve(tempDir, `book-${book.id}.epub`);
     fs.writeFileSync(tempFilePath, book.epub);
-    EPub.createAsync(tempFilePath).then((epub) => {
-      res.status(200).json(epub.flow.slice(1));
-      fs.unlink(tempFilePath, () => {});
-    });
+
+    EPub.createAsync(tempFilePath)
+      .then((epub) => {
+        const chapter = epub.flow[1]; // You could allow `req.query.chapterIndex` to be dynamic
+
+        epub.getChapter(chapter.id, (err, text) => {
+          fs.unlink(tempFilePath, () => {}); // Clean up temp file
+
+          if (err) {
+            console.error("Erreur de lecture du chapitre :", err);
+            return res
+              .status(500)
+              .json({ message: "Erreur de lecture du chapitre", error: err });
+          }
+
+          res.status(200).send(
+            `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${chapter.id}</title></head><body>${text}</body></html>` // HTML content of the chapter
+          );
+        });
+      })
+      .catch((e) => {
+        fs.unlink(tempFilePath, () => {});
+        console.error("Erreur de traitement EPUB :", e);
+        return res
+          .status(500)
+          .json({ message: "Erreur de traitement EPUB", error: e });
+      });
   });
 }
+
 export async function Delete(req, res) {
   Book.findByPk(req.params.id).then((deletedbook) => {
     if (!deletedbook) {

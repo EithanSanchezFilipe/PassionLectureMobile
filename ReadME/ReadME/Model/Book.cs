@@ -38,16 +38,8 @@ namespace ReadME.Model
 
     public class Chapter
     {
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
+        [JsonPropertyName("content")]
+        public string Content { get; set; }
 
-        [JsonPropertyName("href")]
-        public string Href { get; set; }
-
-        [JsonPropertyName("media-type")]
-        public string Media_Type { get; set; }
-
-        [JsonPropertyName("mediaType")]
-        public string MediaType { get; set; }
     }
 }
