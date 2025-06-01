@@ -5,8 +5,10 @@ import { CategoryModel } from "../models/category.mjs";
 import { CommentModel } from "../models/comment.mjs";
 import { EditorModel } from "../models/editor.mjs";
 import { UserModel } from "../models/user.mjs";
+import { TagModel } from "../models/tag.mjs";
+import { BookTagModel } from "../models/book-tag.mjs";
 import { initAssociations } from "../models/associations.mjs";
-import { books, authors, editors, categories } from "./data-mock.mjs";
+import { books, authors, editors, categories, tags } from "./data-mock.mjs";
 import { EPub } from "epub2";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -29,18 +31,29 @@ const Author = AuthorModel(sequelize, DataTypes);
 const User = UserModel(sequelize, DataTypes);
 const Book = BookModel(sequelize, DataTypes);
 const Comment = CommentModel(sequelize, DataTypes);
+const Tag = TagModel(sequelize, DataTypes);
+const BookTag = BookTagModel(sequelize, DataTypes);
 
-await initAssociations(User, Editor, Comment, Category, Book, Author);
+await initAssociations(
+  User,
+  Editor,
+  Comment,
+  Category,
+  Book,
+  Author,
+  Tag,
+  BookTag
+);
 // Test the connection
 
 sequelize
   .sync({ force: true })
-  .then((_) => {
-    initCat();
-    initEdi();
-    initAut();
-    initEPub();
-    //initBook();
+  .then(async (_) => {
+    await initCat();
+    await initEdi();
+    await initAut();
+    await initTag();
+    await initBook();
     console.log("The database has been synchronized");
   })
   .catch((e) => {
@@ -72,8 +85,18 @@ const initAut = () => {
     });
   });
 };
+const initTag = () => {
+  tags.map((tag) => {
+    Tag.create({ id: tag.id, name: tag.name });
+  });
+};
 const initBook = () => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
   books.map((book) => {
+    const epubPath = path.resolve(__dirname, `./epubs/${book.epub}`);
+    const epubBuffer = fs.readFileSync(epubPath);
     Book.create({
       id: book.id,
       name: book.titre,
@@ -84,27 +107,10 @@ const initBook = () => {
       category_fk: book.id_categorie,
       author_fk: book.id_auteur,
       editor_fk: book.id_editeur,
+      epub: epubBuffer,
     });
-  });
-};
-const initEPub = async () => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const epubPath = path.resolve(__dirname, "./epubs/OliverTwist.epub");
-  const epubBuffer = fs.readFileSync(epubPath);
-  Book.create({
-    name: "Oliver Twist",
-    passage: "S'il vous plaît, monsieur, j’en veux encore.",
-    summary:
-      "Oliver Twist, un orphelin né dans un hospice, subit de nombreuses épreuves en grandissant dans la pauvreté. Il tombe entre les mains d'un gang de voleurs dirigé par Fagin, mais cherche à échapper à ce destin pour trouver amour et justice.",
-    editionYear: 1838,
-    pages: 608,
-    epub: epubBuffer,
-    category_fk: 1,
-    author_fk: 1,
-    editor_fk: 1,
   });
 };
 
 export default sequelize;
-export { User, Editor, Comment, Category, Book, Author, sequelize };
+export { User, Editor, Comment, Category, Book, Author, sequelize, Tag };
