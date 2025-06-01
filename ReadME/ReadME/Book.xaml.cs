@@ -11,7 +11,6 @@ public partial class Book : ContentPage
 
     private void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        Trace.WriteLine("aaaaaaaa");
         if (e.CurrentSelection.FirstOrDefault() is Model.Book selectedBook)
         {
             Shell.Current.Navigation.PushAsync(new BookDetail(selectedBook));

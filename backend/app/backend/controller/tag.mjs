@@ -38,6 +38,7 @@ const GetBooks = async (req, res) => {
     ],
   })
     .then((tagWithBooks) => {
+      console.log(tagWithBooks);
       res.json({
         message: `Liste de livres trouvées pour le tag ${tagWithBooks.name}`,
         data: tagWithBooks,

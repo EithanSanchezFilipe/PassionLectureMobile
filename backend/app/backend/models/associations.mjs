@@ -47,10 +47,12 @@ const initAssociations = async (
   Book.belongsToMany(Tag, {
     through: BookTag,
     foreignKey: "book_fk",
+    otherKey: "tag_fk",
   });
   Tag.belongsToMany(Book, {
     through: BookTag,
     foreignKey: "tag_fk",
+    otherKey: "book_fk",
   });
 };
 export { initAssociations };

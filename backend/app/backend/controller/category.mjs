@@ -1,5 +1,5 @@
-import { Category, Book } from '../db/sequelize.mjs';
-import { ValidationError } from 'sequelize';
+import { Category, Book } from "../db/sequelize.mjs";
+import { ValidationError } from "sequelize";
 
 // Ajouter une catégorie
 export function Create(req, res) {
@@ -48,7 +48,7 @@ export function FindByCategory(req, res) {
     })
     .catch((error) => {
       return res.status(500).json({
-        message: 'Erreur lors de la recherche de la catégorie',
+        message: "Erreur lors de la recherche de la catégorie",
         error,
       });
     });

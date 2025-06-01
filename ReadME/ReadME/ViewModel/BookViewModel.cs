@@ -16,19 +16,46 @@ namespace ReadME.ViewModel
         private ObservableCollection<Model.Book> _books = new ObservableCollection<Model.Book>();
 
         [ObservableProperty]
+        private ObservableCollection<Tag> _tags = new ObservableCollection<Model.Tag>();
+
+        [ObservableProperty]
+        private Tag _selectedTag;
+
+
+        [ObservableProperty]
         private Model.Book _selectedBook;
-
-
 
         public BookViewModel()
         {
             GetBooks();
+            GetTags();
         }
 
         private async void GetBooks()
         {
-           Books = await BookServices.GetBooks();
+            Books.Clear();
+            Books = await BookServices.GetBooks();
         }
 
+        private async void GetTags()
+        {
+            Tags = await TagServices.GetTagsAsync();
+            Tags.Insert(0, new Tag { Id = 0, Name = "All" });
+        }
+
+        partial void OnSelectedTagChanged(Tag value)
+        {
+            if (value == null || value.Id == 0)
+            {
+                GetBooks();
+                return;
+            }
+            Books.Clear();
+            GetBooks(value.Id);
+        }
+        private async void GetBooks(int tagId)
+        {
+            Books = await TagServices.GetBooks(tagId);
+        }
     }
 }

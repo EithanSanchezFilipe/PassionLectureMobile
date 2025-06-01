@@ -94,10 +94,10 @@ const initBook = () => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
-  books.map((book) => {
+  books.map(async (book) => {
     const epubPath = path.resolve(__dirname, `./epubs/${book.epub}`);
     const epubBuffer = fs.readFileSync(epubPath);
-    Book.create({
+    await Book.create({
       id: book.id,
       name: book.titre,
       passage: book.extrait,
@@ -109,6 +109,8 @@ const initBook = () => {
       editor_fk: book.id_editeur,
       epub: epubBuffer,
     });
+
+    BookTag.create({ book_fk: book.id, tag_fk: book.tag });
   });
 };
 

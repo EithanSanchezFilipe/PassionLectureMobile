@@ -1,15 +1,16 @@
-﻿using System;
+﻿using ReadME.Model;
+using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Text.Json;
-using ReadME.Model;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ReadME.Services
 {
     public class BookServices
     {
         public static string BaseAddress =
-    DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:8080" : "http://localhost:8080";
+    DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:8080/api/book" : "http://localhost:8080/api/book";
         static HttpClient client = new HttpClient();
         public static ImageSource DecodeBase64ToImage(string base64String)
         {
@@ -31,7 +32,7 @@ namespace ReadME.Services
             ObservableCollection<Model.Book> books = new ObservableCollection<Model.Book>();
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{BaseAddress}/api/book");
+                HttpResponseMessage response = await client.GetAsync($"{BaseAddress}");
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
