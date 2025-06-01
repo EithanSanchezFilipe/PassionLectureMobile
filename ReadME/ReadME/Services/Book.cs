@@ -58,33 +58,5 @@ namespace ReadME.Services
                 return null;
             }
         }
-        public static async Task<Model.Chapter> GetChapters(int bookId)
-        {
-            try
-            {
-                Chapter chapter = new Chapter();
-                HttpResponseMessage response = await client.GetAsync($"{BaseAddress}/api/book/{bookId}/chapters");
-                response.EnsureSuccessStatusCode();
-
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,  // Ignore les différences de casse
-                    AllowTrailingCommas = true           // Ignore les virgules en trop
-                };
-                var chapterResponse = JsonSerializer.Deserialize<Chapter>(responseBody, options);
-                if (chapterResponse != null)
-                {
-                    chapter = chapterResponse;
-                }
-
-                    return chapter;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
     }
 }

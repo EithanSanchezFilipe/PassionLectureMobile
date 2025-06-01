@@ -27,5 +27,11 @@ namespace ReadME.ViewModel
         {
             Shell.Current.Navigation.PushAsync(new Read(id));
         }
+
+        [RelayCommand]
+        public void GoBack()
+        {
+            Shell.Current.Navigation.PopAsync();
+        }
     }
 }

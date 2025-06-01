@@ -31,8 +31,6 @@ namespace ReadME.ViewModel
         private void Initialize()
         {
             Page = $"http://localhost:8080/api/book/{_bookId}/chapters";
-            //Chapters = await BookServices.GetChapters(_bookId);
-            //Trace.WriteLine(Chapters);
             Trace.WriteLine(Page);
         }
 
